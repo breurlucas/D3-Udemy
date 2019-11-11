@@ -19,7 +19,7 @@ var a;
 // Define margins, width and height
 var margin = { top:10, right:10, bottom:100, left:100};
 var width = 1000 - margin.left - margin.right,
-	height = 600 - margin.top - margin.bottom;
+	height = 500 - margin.top - margin.bottom;
 
 // Create scales. Log scale for x and linear scale for y
 var x = d3.scaleLog()
@@ -59,6 +59,30 @@ g.append("g")
 g.append("g")
 	.attr("class", "left axis")
 	.call(yAxisCall)
+
+// Add labels to each axis
+g.append("text")
+	.attr("x", width/2)
+	.attr("y", height + 60)
+	.attr("font-size", 20)
+	.attr("text-anchor", "middle")
+	.text("GDP Per Capita [$]");
+
+g.append("text")
+	.attr("x", -height/2)
+	.attr("y", -60)
+	.attr("font-size", 20)
+	.attr("text-anchor", "middle")
+	.attr("transform", "rotate(-90)")
+	.text("Life Expectancy [Years]");
+
+var yearLabel = g.append("text")
+	.attr("x", width - 70)
+    .attr("y", height -20)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "60px")
+    .attr("opacity", "0.4")
+    .text("1800");
 
 // Load data
 d3.json("data/data.json").then((data) => {
@@ -157,5 +181,9 @@ function update(data) {
 			.attr("r", (country) => {
 				return Math.sqrt(a(country.population) / Math.PI);
 			});
+
+	// Update the year label every iteration
+    yearLabel.text(year + 1800)
 }
+
 

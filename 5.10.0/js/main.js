@@ -86,7 +86,7 @@ var yearLabel = g.append("text")
 
 // Load data
 d3.json("data/data.json").then((data) => {
-
+	console.log(data)
 	// Clean null values from data
 	const filteredData = data.map((year) => {
 		// Returns true only for the countries in each year

@@ -53,12 +53,39 @@ var line = d3.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(d.value); });
 
-d3.json("data/example.json").then(function(data) {
-    // Data cleaning
-    data.forEach(function(d) {
-        d.year = parseTime(d.year);
-        d.value = +d.value;
-    });
+// TIme parse function
+var parseTime = d3.timeParse("%d/%m/%Y");
+
+d3.json("data/coins.json").then(function(data) {
+    
+    console.log(data)
+   
+    filteredData = {};
+    // Clean null values from data
+    for (var coin in data) {
+        // Mozilla Docs – for loop
+        if (!data.hasOwnProperty(coin)) {
+            continue;
+        }
+         // Returns true only for the dates which don't have null values for 24h_vol,
+        // market_cap and price_usd.
+        filteredData[coin] = data[coin].filter((date) => {
+            var notNull = (date["24h_vol"] && date.market_cap && date.price_usd);
+            return notNull;
+            // For each date returned true in the filter above, it
+            // converts 24h_vol, market_cap and price_usd to numbers.
+            // Also, it parses the date into a dateObject
+            }).map((date) => {
+                date["24h_vol"] = +date["24h_vol"];
+                date.market_cap = +date.market_cap;
+                date.price_usd = +date.price_usd;
+                date.date = parseTime(date.date);
+                // Returns only the valid dates with converted entries
+                return date;            
+            });
+    };
+
+    console.log(filteredData);
 
     // Set scale domains
     x.domain(d3.extent(data, function(d) { return d.year; }));
